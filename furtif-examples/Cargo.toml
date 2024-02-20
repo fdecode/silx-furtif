@@ -1,0 +1,22 @@
+[package]
+name = "furtif-examples"
+version = "0.1.0"
+edition = "2021"
+authors = ["Frederic Dambreville", "Jean Dezert"]
+license = "LGPL-3.0"
+description = "Flexible User-oriented Rusted Toolbox for Information Fusion: a data fusion toolbox based on asynchronous and interacting processes, particularly focused on belief functions fusion"
+keywords = ["fusion", "belief function"]
+repository = "https://github.com/fdecode/silx-furtif"
+readme = "README.md"
+categories = ["toolbox"]
+
+[dependencies]
+tokio = { version = "^1.36.0", features = ["full"]}
+serde = { version = "^1.0.196", features = ["derive",]}
+serde_yaml = "^0.9.31"
+serde_json = "^1.0.113"
+typetag = "^0.2.15"
+
+silx-core = { version = "0.1.0", path = "../silx-core" }
+silx-types = { version = "0.1.0", features = ["le_silx"], path = "../silx-types" }
+furtif-core = { version = "0.1.0", path = "../furtif-core" }

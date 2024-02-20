@@ -1,0 +1,28 @@
+[package]
+name = "furtif-core"
+version = "0.1.0"
+edition = "2021"
+authors = ["Frederic Dambreville", "Jean Dezert"]
+license = "LGPL-3.0"
+description = "Flexible User-oriented Rusted Toolbox for Information Fusion: a data fusion toolbox based on asynchronous and interacting processes, particularly focused on belief functions fusion"
+keywords = ["fusion", "belief function"]
+repository = "https://github.com/fdecode/silx-furtif"
+readme = "README.md"
+categories = ["toolbox"]
+
+[dependencies]
+clap = { version = "^4.5.0", features = ["derive"] }
+rand = "^0.8.5"
+rand_distr = "^0.4.3"
+serde = "^1.0.196"
+rkyv = { version = "^0.7.44", features = ["uuid", "validation",]}
+
+silx-types = { version = "0.1.0", features = ["le_silx"], path = "../silx-types" }
+hashed-type-def = { version = "0.1.0", features = ["derive"], path = "../hashed-type-def" }
+
+[features]
+default = ["verbose4"]
+verbose1 = []
+verbose2 = ["verbose1"]
+verbose3 = ["verbose2"]
+verbose4 = ["verbose3"]
