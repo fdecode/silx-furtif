@@ -1,0 +1,36 @@
+[package]
+name = "silx-types"
+version = "0.1.0"
+edition = "2021"
+authors = ["Frederic Dambreville"]
+license = "Apache-2.0"
+description = "aSynchronous Interactive calcuLation eXecutor: an easy to use executor for asynchronous and interacting processes"
+keywords = ["asynchrone", "multiprocess", "executor"]
+repository = "https://github.com/fdecode/silx-furtif"
+readme = "README.md"
+categories = ["development-tools"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+num-traits = "^0.2.18"
+approx = "^0.5.1"
+simba = "^0.8.1"
+rkyv = "^0.7.44"
+serde = { version = "^1.0.196", features = ["derive",]}
+rend = "^0.4.2"
+nalgebra = { version = "^0.32.3", optional =  true }
+tokio = { version = "^1.36.0", features = ["full"]}
+
+silx-core = { version = "0.1.0", path = "../silx-core" }
+hashed-type-def = { version = "0.1.0", features = ["derive", "impl_rend"], path = "../hashed-type-def" }
+
+[features]
+default = ["le_silx", "use_nalgebra", "verbose4"]
+verbose1 = []
+verbose2 = ["verbose1"]
+verbose3 = ["verbose2"]
+verbose4 = ["verbose3"]
+le_silx = []
+be_silx = []
+use_nalgebra = ["nalgebra", "hashed-type-def/impl_nalgebra"]

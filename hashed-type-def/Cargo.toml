@@ -1,0 +1,27 @@
+[package]
+name = "hashed-type-def"
+version = "0.1.0"
+edition = "2021"
+authors = ["Frederic Dambreville"]
+license = "Apache-2.0"
+description = "A simple hash based type identifier: hash code is computed on the basis of type definition"
+keywords = ["hashed", "type definition", "derive"]
+repository = "https://github.com/fdecode/silx-furtif"
+readme = "README.md"
+categories = ["development-tools"]
+
+[dependencies]
+hashed-type-def-core = { version = "0.1.0", path = "../hashed-type-def-core" }
+hashed-type-def-procmacro = { version = "0.1.0", optional = true, path = "../hashed-type-def-procmacro" }
+
+[features]
+default = ["verbose4"]
+verbose1 = ["hashed-type-def-core/verbose1"]
+verbose2 = ["verbose1", "hashed-type-def-core/verbose2"]
+verbose3 = ["verbose2", "hashed-type-def-core/verbose3"]
+verbose4 = ["verbose3", "hashed-type-def-core/verbose4"]
+
+impl_nalgebra_sparse = ["hashed-type-def-core/impl_nalgebra_sparse"]
+impl_nalgebra = ["hashed-type-def-core/impl_nalgebra"]
+impl_rend = ["hashed-type-def-core/impl_rend"]
+derive = ["hashed-type-def-procmacro"]

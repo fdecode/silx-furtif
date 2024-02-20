@@ -1,0 +1,23 @@
+[package]
+name = "silx-examples"
+version = "0.1.0"
+edition = "2021"
+authors = ["Frederic Dambreville"]
+license = "Apache-2.0"
+description = "aSynchronous Interactive calcuLation eXecutor: an easy to use executor for asynchronous and interacting processes"
+keywords = ["asynchrone", "multiprocess", "executor"]
+repository = "https://github.com/fdecode/silx-furtif"
+readme = "README.md"
+categories = ["development-tools"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+tokio = { version = "^1.36.0", features = ["full"]}
+serde = { version = "^1.0.196", features = ["derive",]}
+typetag = "^0.2.15"
+nalgebra = { version = "^0.32.3" }
+
+silx-core = { version = "0.1.0", path = "../silx-core" }
+silx-types = { version = "0.1.0", path = "../silx-types" }

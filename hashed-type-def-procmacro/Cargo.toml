@@ -1,0 +1,20 @@
+[package]
+name = "hashed-type-def-procmacro"
+version = "0.1.0"
+edition = "2021"
+authors = ["Frederic Dambreville"]
+license = "Apache-2.0"
+description = "Proc-macro generator for a hash based type identifier: hash code is computed on the basis of type definition"
+keywords = ["hashed", "type definition", "derive"]
+repository = "https://github.com/fdecode/silx-furtif"
+readme = "README.md"
+categories = ["development-tools"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "^1.0.78"
+syn = "^2.0.48"
+quote = "^1.0.35"
+rand = "^0.8.5"

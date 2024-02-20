@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = [
+    "hashed-type-def-core",
+    "hashed-type-def-procmacro",
+    "hashed-type-def",
+    "hashed-type-def-test",
+    "hashed-type-def-test-derive",
+    "silx-core",
+    "silx-examples",
+    "silx-types",
+    "furtif-core",
+    "furtif-examples",
+]
