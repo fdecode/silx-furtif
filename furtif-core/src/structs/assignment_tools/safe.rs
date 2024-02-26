@@ -17,12 +17,15 @@
 use std::fmt::Display;
 
 use hashed_type_def::HashedTypeDef;
-use silx_types::u128slx;
-use serde::{ Serialize as SerdeSerialize, Deserialize as SerdeDeserialize, };
-use rkyv::{ Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+// #[cfg(not(feature = "silx-types"))] use crate::fake_slx::u128slx;
+// #[cfg(feature = "silx-types")] use silx_types::u128slx;
+use crate::types::u128slx;
 
-#[derive(HashedTypeDef, Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord,
-                                                        Archive,RkyvSerialize,RkyvDeserialize)]
+#[cfg(feature = "serde")] use serde::{ Serialize as SerdeSerialize, Deserialize as SerdeDeserialize, };
+#[cfg(feature = "rkyv")] use rkyv::{ Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+
+#[derive(HashedTypeDef, Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord,)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
 /// Definition of safe element
 /// * Safe element combines the element's actual encoding (which generally gives no information about the original lattice) with the hash of its lattice
 /// * `X` : type of the encoding
@@ -38,8 +41,11 @@ impl<X> Display for SafeElement<X> where X: Display {
 }
 
 // implementation of Serde serialization
+#[cfg(feature = "serde")]
 mod serding {
-    use silx_types::{IntoSlx, SlxInto};
+    // #[cfg(not(feature = "silx-types"))] use crate::fake_slx::FakeSlx;
+    // #[cfg(feature = "silx-types")] use silx_types::{IntoSlx, SlxInto};
+    use crate::types::{ SlxInto, IntoSlx, };
     use super::{ 
         SafeElement as SerdingSafeElement, SerdeSerialize, SerdeDeserialize,
     };
@@ -47,8 +53,7 @@ mod serding {
     pub struct SafeElement<X> {
         element: X, lattice_hash: u128,
     }
-    impl<'de, X> SerdeDeserialize<'de> for SerdingSafeElement<X>  
-                                                where X: SerdeDeserialize<'de>, {
+    impl<'de, X> SerdeDeserialize<'de> for SerdingSafeElement<X> where X: SerdeDeserialize<'de>, {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where D: serde::Deserializer<'de> {
             let SafeElement { element, lattice_hash} = SafeElement::<X>::deserialize(deserializer)?;

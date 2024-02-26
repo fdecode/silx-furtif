@@ -25,13 +25,12 @@ use crate::{
 };
 
 use hashed_type_def::HashedTypeDef;
-use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
-use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
+#[cfg(feature = "rkyv")] use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+#[cfg(feature = "serde")] use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
 
-#[derive(
-    Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, SerdeSerialize, SerdeDeserialize, 
-    Copy, Clone, Debug
-)]
+#[derive(HashedTypeDef, Copy, Clone, Debug)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
+#[cfg_attr(feature = "serde", derive(SerdeSerialize, SerdeDeserialize))]
 /// Enumeration of referee functions implemented by default
 /// * This is useful for defining the choice of a rule within a single type
 pub enum EnumRule {

@@ -17,17 +17,16 @@
 use std::ops::RangeInclusive;
 
 use hashed_type_def::HashedTypeDef;
-use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
-use silx_types::{u32slx, IntoSlx, SlxInto};
+#[cfg(feature = "rkyv")] use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+use crate::types::{ u32slx, SlxInto, IntoSlx, };
+// #[cfg(not(feature = "silx-types"))] use crate::fake_slx::{ u32slx, FakeSlx };
+// #[cfg(feature = "silx-types")] use silx_types::{u32slx, IntoSlx, SlxInto};
 
 use crate::traits::DiscountedFusion;
-use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
+#[cfg(feature = "serde")] use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
 
-#[derive(
-    Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, // SerdeSerialize, SerdeDeserialize, 
-    Copy, Clone, Debug
-)]
-
+#[derive(HashedTypeDef, Copy, Clone, Debug)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
 /// Generic fusion engine based on exact computation, but with mass discounting when above a given range
 /// * Mass discounting is performed by iteratively putting the mass of the weakest assigments on their disjunction 
 pub struct DiscountedFuser {
@@ -35,8 +34,10 @@ pub struct DiscountedFuser {
 }
 
 // implementation of Serde serialization
-mod serding {
-    use silx_types::{IntoSlx, SlxInto};
+#[cfg(feature = "serde")] mod serding {
+    use crate::types::{ SlxInto, IntoSlx, };
+    // #[cfg(not(feature = "silx-types"))] use crate::fake_slx::FakeSlx;
+    // #[cfg(feature = "silx-types")] use silx_types::{IntoSlx, SlxInto};
     use super::{ 
         DiscountedFuser as SerdingDiscountedFuser, SerdeSerialize, SerdeDeserialize,
     };
@@ -57,9 +58,9 @@ mod serding {
     impl SerdeSerialize for SerdingDiscountedFuser {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where S: serde::Serializer {
-            let Self { range_min, range_max  } = self;
-            let range_min = (*range_min).unslx();
-            let range_max = (*range_max).unslx();
+            let Self { range_min, range_max  } = *self;
+            let range_min = range_min.unslx();
+            let range_max = range_max.unslx();
             let discounted_fuser = DiscountedFuser { range_min, range_max };
             discounted_fuser.serialize(serializer)
         }
@@ -71,8 +72,10 @@ impl DiscountedFuser {
     /// * `range: RangeInclusive<usize>` : range within which the fused assignment size will be reduced after discounting
     /// * Output: fusion engine
     pub fn new(range: RangeInclusive<usize>) -> Self {
-        let range_min = ((*range.start()) as u32).slx();
-        let range_max = ((*range.end()) as u32).slx();
+        let range_min = (*range.start()) as u32;
+        let range_max = (*range.end()) as u32;
+        let range_min = range_min.slx();
+        let range_max = range_max.slx();
         Self { range_min, range_max }
     }
 }
@@ -80,8 +83,8 @@ impl DiscountedFuser {
 impl DiscountedFusion for DiscountedFuser {
     fn size_range(&self) -> RangeInclusive<usize> {
         let Self { range_min, range_max } = *self;
-        let start = range_min.unslx() as usize;
-        let end = range_max.unslx() as usize;
-        start..=end
+        let range_min = range_min.unslx() as usize;
+        let range_max = range_max.unslx() as usize;
+        range_min..=range_max
     }
 }

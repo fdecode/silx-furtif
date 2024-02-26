@@ -20,15 +20,21 @@ use std::{
     vec, iter::once,
 };
 use hashed_type_def::{HashedTypeDef, add_hash_fnv1a};
-use serde::{ Serialize as SerdeSerialize, Deserialize as SerdeDeserialize, };
-use rkyv::{ Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+#[cfg(feature = "serde")] use serde::{ Serialize as SerdeSerialize, Deserialize as SerdeDeserialize, };
+#[cfg(feature = "rkyv")] use rkyv::{ Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
 use rand::prelude::*;
 use rand_distr::{ Open01, Poisson, Distribution, };
-use silx_types::{ u128slx, IntoSlx, SlxInto, f64slx, };
+// #[cfg(feature = "silx-types")] use silx_types::{ u128slx, IntoSlx, SlxInto, f64slx, };
+// #[cfg(not(feature = "silx-types"))] use crate::fake_slx::{f64slx, u128slx,FakeSlx};
 
-use crate::{traits::{Lattice, IterableLattice, LatticeWithLeaves}, structs::SafeElement};
+use crate::{
+    types::{ u128slx, f64slx, SlxInto, IntoSlx, },
+    traits::{Lattice, IterableLattice, LatticeWithLeaves}, 
+    structs::SafeElement
+};
 
-#[derive(Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, Clone, Debug)]
+#[derive(HashedTypeDef, Clone, Debug)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
 /// Code table for a taxonomy (to be computed By Taxonomy contructor)
 pub struct TaxonCoder(HashMap<u128slx,u128slx>);
 
@@ -61,7 +67,7 @@ impl TaxonCoder { // worst case for taxonomy depth depends on the number of subt
     pub fn above_top_u128() -> u128 { 0x02000000_00000000_00000000_00000000u128 }
     #[inline(always)]
     pub fn above_top_u128slx() -> u128slx { Self::above_top_u128().slx() }
-   #[inline(always)]
+    #[inline(always)]
     pub fn top_u128() -> u128 { 0x01FFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFFu128 }
     #[inline(always)]
     pub fn top_u128slx() -> u128slx { Self::top_u128().slx() }
@@ -159,7 +165,8 @@ trait RandomTaxon {
 impl RandomTaxon for () { }
 
 // Rkyv serialization is not possible here (easily) since the type is recursive
-#[derive(Debug,Clone,SerdeSerialize,SerdeDeserialize, PartialEq, PartialOrd,)]
+#[derive(Debug,Clone,PartialEq, PartialOrd,)]
+#[cfg_attr(feature = "serde", derive(SerdeSerialize, SerdeDeserialize))]
 /// Taxonomy builder: definition of a taxonomy by means of main taxon and sorted children
 /// * This builder is not suitable for Lattice implementation, and Taxonomy should be inited from it
 pub enum TaxonomyBuilder { // a Taxon is characterized by its UNIQUE name
@@ -194,7 +201,8 @@ impl Ord for TaxonomyBuilder {
     }
 }
 
-#[derive(Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, Clone, Debug, PartialEq,)]
+#[derive(HashedTypeDef, Clone, Debug, PartialEq,)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
 /// Taxon code-based definition
 /// * For this type, children are mapped by means of an extern code table
 /// * For this reason, `Taxon` should be used within type `Taxons`
@@ -215,7 +223,8 @@ pub enum Taxon { // a Taxon is characterized by its UNIQUE name
     }
 }
 
-#[derive(Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, Clone, Debug, PartialEq,)]
+#[derive(HashedTypeDef, Clone, Debug, PartialEq,)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
 /// Taxonomy described by a list of taxa and their codes
 pub struct Taxons { // a Taxon is characterized by its UNIQUE name
     /// Code table for the taxa
@@ -240,7 +249,8 @@ enum TaxonOrd<D> {
 }
 
 
-#[derive(Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, Clone, Debug,)]
+#[derive(HashedTypeDef, Clone, Debug,)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
 /// Structure of a taxonomy lattice
 pub struct Taxonomy {
     taxons: Taxons,
@@ -255,7 +265,7 @@ pub struct Taxonomy {
 }
 
 // implementation of Serde serialization
-mod serding {
+#[cfg(feature = "serde")] mod serding {
     use super::{ 
         Taxonomy as SerdingTaxonomy, SerdeSerialize, SerdeDeserialize, TaxonomyBuilder,
     };
@@ -675,7 +685,8 @@ impl Taxonomy {
         } else { Err("Failed to build taxonomy".to_string()) }
     }
 
-    /// for internal use: an empty taxonomy -> produced in case of deserialization error
+    #[cfg(feature = "serde")] 
+    /// internal use for serde: an empty taxonomy -> produced in case of deserialization error
     fn empty() -> Self {
         let zero = 0u128.slx();
         let taxons = Taxons { taxons: HashMap::new(), root: zero };

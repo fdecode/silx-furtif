@@ -1,6 +1,6 @@
 [package]
 name = "silx-examples"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Frederic Dambreville"]
 license = "Apache-2.0"
@@ -15,9 +15,9 @@ categories = ["development-tools"]
 [dependencies]
 
 tokio = { version = "^1.36.0", features = ["full"]}
-serde = { version = "^1.0.196", features = ["derive",]}
+serde = { version = "^1.0.197", features = ["derive",]}
 typetag = "^0.2.15"
-nalgebra = { version = "^0.32.3" }
+nalgebra = { version = "^0.32.4" }
 
-silx-core = { version = "0.1.0", path = "../silx-core" }
-silx-types = { version = "0.1.0", path = "../silx-types" }
+silx-core = { version = "0.1.1", path = "../silx-core" }
+silx-types = { version = "0.1.1", path = "../silx-types" }

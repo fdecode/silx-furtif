@@ -1,6 +1,6 @@
 [package]
 name = "furtif-examples"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Frederic Dambreville", "Jean Dezert"]
 license = "LGPL-3.0"
@@ -12,11 +12,11 @@ categories = ["toolbox"]
 
 [dependencies]
 tokio = { version = "^1.36.0", features = ["full"]}
-serde = { version = "^1.0.196", features = ["derive",]}
-serde_yaml = "^0.9.31"
-serde_json = "^1.0.113"
+serde = { version = "^1.0.197", features = ["derive",]}
+serde_yaml = "^0.9.32"
+serde_json = "^1.0.114"
 typetag = "^0.2.15"
 
-silx-core = { version = "0.1.0", path = "../silx-core" }
-silx-types = { version = "0.1.0", features = ["le_silx"], path = "../silx-types" }
-furtif-core = { version = "0.1.0", path = "../furtif-core" }
+silx-core = { version = "0.1.1", path = "../silx-core" }
+silx-types = { version = "0.1.1", path = "../silx-types" }
+furtif-core = { version = "0.1.1", path = "../furtif-core" }

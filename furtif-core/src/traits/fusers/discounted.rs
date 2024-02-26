@@ -16,8 +16,11 @@
 
 use std::{ hash::Hash, iter::once, ops::RangeInclusive, };
 
-use silx_types::{ f64slx, IntoSlx, Float, };
+#[cfg(feature = "silx-types")] use silx_types::Float;
+// #[cfg(feature = "silx-types")]use silx_types::{ f64slx, IntoSlx, Float, };
+// #[cfg(not(feature = "silx-types"))] use crate::fake_slx::{f64slx, FakeSlx};
 use crate::{
+    types::{ f64slx, IntoSlx, },
     structs::{ Assignment, SafeArray, one_f64slx, zero_f64slx, },
     traits::{ Lattice, Referee, CollectionFamily1, },
 };

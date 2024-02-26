@@ -16,9 +16,13 @@
 
 use std::{hash::Hash, collections::HashMap, };
 
-use silx_types::{ f64slx, u32slx, Float, IntoSlx, SlxInto};
+// #[cfg(not(feature = "silx-types"))] use crate::fake_slx::{f64slx, u32slx,  FakeSlx};
+// #[cfg(feature = "silx-types")] use silx_types::{ f64slx, u32slx, Float, IntoSlx, SlxInto};
+
+#[cfg(feature = "silx-types")] use silx_types::Float;
 
 use crate::{
+    types::{ u32slx, f64slx, SlxInto, IntoSlx, },
     structs::{Assignment, SafeElement, ASSIGNMENT_EPSILON, one_f64slx, zero_f64slx}, 
     traits::Lattice,
 };
@@ -402,9 +406,11 @@ impl<L> ComplementedBeliefTransform for L
 
 
 pub mod experiment {
-    use silx_types::IntoSlx;
+    // #[cfg(not(feature = "silx-types"))] use crate::fake_slx::FakeSlx;
+    // #[cfg(feature = "silx-types")] use silx_types::IntoSlx;
 
     use crate::{
+        types::IntoSlx,
         structs::Powerset, 
         traits::{ Lattice, BeliefTransform, ComplementedBeliefTransform, LatticeWithLeaves, }
     };

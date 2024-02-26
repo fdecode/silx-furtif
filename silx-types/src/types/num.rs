@@ -10,9 +10,9 @@ use hashed_type_def::HashedTypeDef;
 
 use approx::{ RelativeEq, UlpsEq, AbsDiffEq, };
 use serde::{ Serialize as SerdeSerialize, Deserialize as SerdeDeserialize, };
-#[cfg(all(not(feature = "le_silx"),feature = "be_silx"))]
+#[cfg(feature = "be_silx")]
 use rend::BigEndian;
-#[cfg(all(not(feature = "be_silx"),feature = "le_silx"))]
+#[cfg(not(feature = "be_silx"))]
 use rend::LittleEndian;
 use std::{ pin::Pin, fmt, fmt::{ Display, Debug, }, };
 pub use std::{

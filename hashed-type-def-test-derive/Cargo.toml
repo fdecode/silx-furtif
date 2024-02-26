@@ -1,18 +1,18 @@
 [package]
 name = "hashed-type-def-test-derive"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Frederic Dambreville"]
 license = "Apache-2.0"
 description = "A simple hash based type identifier: hash code is computed on the basis of type definition"
-keywords = ["hashed", "type definition", "derive"]
+keywords = ["hashed", "Hash", "Id", "type", "derive"]
 repository = "https://github.com/fdecode/silx-furtif"
 readme = "README.md"
 categories = ["development-tools"]
 
 [dev-dependencies]
 uuid = "1.7.0"
-hashed-type-def = { version = "0.1.0", features = ["derive", "impl_rend", "impl_nalgebra_sparse"], path = "../hashed-type-def" }
+hashed-type-def = { version = "0.1.1", features = ["derive", "impl_rend", "impl_nalgebra_sparse"], path = "../hashed-type-def" }
 [dependencies]
 uuid = "1.7.0"
-hashed-type-def = { version = "0.1.0", features = ["derive", "impl_rend", "impl_nalgebra_sparse"], path = "../hashed-type-def" }
+hashed-type-def = { version = "0.1.1", features = ["derive", "impl_rend", "impl_nalgebra_sparse"], path = "../hashed-type-def" }

@@ -1,21 +1,21 @@
 [package]
 name = "hashed-type-def-core"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Frederic Dambreville"]
 license = "Apache-2.0"
 description = "A simple hash based type identifier: hash code is computed on the basis of type definition"
-keywords = ["hashed", "type", "derive"]
+keywords = ["hashed", "Hash", "Id", "type", "derive"]
 repository = "https://github.com/fdecode/silx-furtif"
 readme = "README.md"
 categories = ["development-tools"]
 
 [dependencies]
 uuid = "^1.7.0"
-nalgebra = { optional = true, version = "^0.32.3" }
+nalgebra = { optional = true, version = "^0.32.4" }
 rend =  { optional = true, version = "^0.4.2" }
 
-hashed-type-def-procmacro = { version = "0.1.0", path = "../hashed-type-def-procmacro" }
+hashed-type-def-procmacro = { version = "0.1.1", path = "../hashed-type-def-procmacro" }
 
 [features]
 default = ["verbose4"]

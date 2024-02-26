@@ -25,14 +25,14 @@ macro_rules! impl_num_char_type {
         }
     };
     ($($I:ident-$T:ident,)*) => ($(
-        #[cfg(all(feature = "le_silx",not(feature = "be_silx")))]
+        #[cfg(not(feature = "be_silx"))]
         #[repr(transparent)]
         #[derive(Clone, Copy,)]
         #[derive(HashedTypeDef)]
         #[doc = "Silx primitive related to std primitive "]
         pub struct $I(LittleEndian<$T>);
 
-        #[cfg(all(feature = "be_silx",not(feature = "le_silx")))]
+        #[cfg(feature = "be_silx")]
         #[repr(transparent)]
         #[derive(Clone, Copy,)]
         #[derive(HashedTypeDef)]
@@ -47,11 +47,11 @@ macro_rules! impl_num_char_type {
             /// Get native value of data
             #[inline] fn inner(self) -> $T { self.0.value() }
 
-            #[cfg(all(feature = "le_silx",not(feature = "be_silx")))]
+            #[cfg(not(feature = "be_silx"))]
             /// Create silx data from native value
             #[inline] pub fn new(t:$T) -> $I { Self(LittleEndian::<$T>::new(t)) }
 
-            #[cfg(all(feature = "be_silx",not(feature = "le_silx")))]
+            #[cfg(feature = "be_silx")]
             /// Create silx data from native value
             #[inline] pub fn new(t:$T) -> $I { Self(BigEndian::<$T>::new(t)) }
         }

@@ -22,13 +22,12 @@ use crate::{
 };
 
 use hashed_type_def::HashedTypeDef;
-use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
-use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
+#[cfg(feature = "rkyv")] use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+#[cfg(feature = "serde")] use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
 
-#[derive(
-    Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, SerdeSerialize, SerdeDeserialize, 
-    Copy, Clone, Debug
-)]
+#[derive(HashedTypeDef, Copy, Clone, Debug)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
+#[cfg_attr(feature = "serde", derive(SerdeSerialize, SerdeDeserialize))]
 /// Dempster-Shafer referee function
 pub struct DempsterShafer;
 
@@ -47,12 +46,8 @@ impl Referee for DempsterShafer {
             .map(|e| *e).fold(top, 
                 |acc,e| unsafe { lattice.unsafe_meet(&acc,e) }
             );
-//        let length_mid = u32::MAX.slx(); let length_max = u32::MAX.slx();
         if ! unsafe { lattice.unsafe_is_bottom(&meet) } {
-//            let x = meet;
             let elements = once((meet,*one_f64slx())).collect();
-//            let ord_elements = once(OrdData((x,*one_f64slx()))).collect();
-//            let elements = OrdMap { elements, ord_elements };
             Ok(Assignment { elements, lattice_hash, })
         } else {
             let elements = HashMap::new();
@@ -62,9 +57,11 @@ impl Referee for DempsterShafer {
 }
 
 pub mod experiment {
-    use silx_types::IntoSlx;
+    // #[cfg(not(feature = "silx-types"))] use crate::fake_slx::FakeSlx;
+    // #[cfg(feature = "silx-types")] use silx_types::IntoSlx;
 
     use crate::{
+        types::IntoSlx,
         structs::{Powerset, DiscountedFuser, DempsterShafer, one_f64slx, Assignment, }, 
         traits::{Lattice, DiscountedFusion, LatticeWithLeaves, }
     };
@@ -81,12 +78,14 @@ pub mod experiment {
             lattice.prunable_with_capacity(length_mid, length_max, 2),
             lattice.prunable_with_capacity(length_mid, length_max, 2),
         );
-        let (prop_a, m_a) = (lattice.leaf(0)?, 0.3.slx());
-        let (prop_b, m_b) = (lattice.leaf(1)?, 0.4.slx());
-        let (prop_c, m_c) = (lattice.leaf(2)?, 0.5.slx());
-        let (prop_ab, m_ab) = (lattice.join(&prop_a,&prop_b)?,0.5.slx());
-        let (prop_bc, m_bc) = (lattice.join(&prop_b,&prop_c)?,0.7.slx());
-        let (prop_ca, m_ca) = (lattice.join(&prop_c,&prop_a)?,0.6.slx());
+        let (prop_a, m_a) = (lattice.leaf(0)?, 0.3);
+        let (prop_b, m_b) = (lattice.leaf(1)?, 0.4);
+        let (prop_c, m_c) = (lattice.leaf(2)?, 0.5);
+        let (prop_ab, m_ab) = (lattice.join(&prop_a,&prop_b)?,0.5);
+        let (prop_bc, m_bc) = (lattice.join(&prop_b,&prop_c)?,0.7);
+        let (prop_ca, m_ca) = (lattice.join(&prop_c,&prop_a)?,0.6);
+        let (m_a, m_b, m_c, m_ab, m_bc, m_ca) = 
+            (m_a.slx(), m_b.slx(), m_c.slx(), m_ab.slx(), m_bc.slx(), m_ca.slx());
         m1.push(prop_a,m_a)?;
         m1.push(prop_bc,m_bc)?;
         m2.push(prop_b,m_b)?;

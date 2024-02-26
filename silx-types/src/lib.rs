@@ -21,16 +21,16 @@
 //! ```toml
 //! [package]
 //! name = "silx_hello"
-//! version = "0.1.0"
+//! version = "0.1.1"
 //! edition = "2021"
 //!
 //! [dependencies]
 //! tokio = "^1.36.0"
-//! serde = "^1.0.196"
+//! serde = "^1.0.197"
 //! typetag = "^0.2.15"
 //!
-//! silx-core = "^0.1.0"
-//! silx-types = { version = "^0.1.0", features = ["le_silx"] }
+//! silx-core = "^0.1.1"
+//! silx-types = "^0.1.1"
 //! ```
 //! ## main.rs
 //! ```text
@@ -602,3 +602,9 @@ pub use types::{
 
 #[cfg(feature = "use_nalgebra")]
 pub use types::nalgebra;
+
+
+
+#[doc(hidden)]
+/// Probes for testing features activation
+pub mod probes;

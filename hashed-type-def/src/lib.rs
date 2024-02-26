@@ -16,12 +16,12 @@
 //! ```toml
 //! [package]
 //! name = "silx_hashed-type-def_examples"
-//! version = "0.1.0"
+//! version = "0.1.1"
 //! edition = "2021"
 //! 
 //! [dependencies]
 //! uuid = "1.7.0"
-//! hashed-type-def = { version = "^0.1.0", features = ["derive"] }
+//! hashed-type-def = { version = "^0.1.1", features = ["derive"] }
 //! ```
 //! ## main.rs
 //! ```text
@@ -257,3 +257,7 @@ extern crate hashed_type_def_procmacro;
 #[cfg(feature = "derive")]
 #[doc(hidden)]
 pub use hashed_type_def_procmacro::{ HashedTypeDef, add_hashed_type_def, add_hashed_type_def_param, };
+
+#[doc(hidden)]
+/// Probes for testing features activation
+pub mod probes;

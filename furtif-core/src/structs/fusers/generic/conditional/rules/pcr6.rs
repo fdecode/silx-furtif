@@ -16,21 +16,22 @@
 
 use std::{ hash::Hash, iter::once, };
 
-use silx_types::f64slx;
+// #[cfg(not(feature = "silx-types"))] use crate::fake_slx::f64slx;
+// #[cfg(feature = "silx-types")] use silx_types::f64slx;
 
 use crate::{
+    types::f64slx,
     traits::{ Referee, Lattice, },
     structs::{Assignment, SafeArray, hidden::OrdMap, one_f64slx},
 };
 
 use hashed_type_def::HashedTypeDef;
-use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
-use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
+#[cfg(feature = "rkyv")] use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+#[cfg(feature = "serde")] use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
 
-#[derive(
-    Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, SerdeSerialize, SerdeDeserialize, 
-    Copy, Clone, Debug
-)]
+#[derive(HashedTypeDef, Copy, Clone, Debug)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
+#[cfg_attr(feature = "serde", derive(SerdeSerialize, SerdeDeserialize))]
 /// Pcr6 referee function
 pub struct Pcr6;
 
@@ -65,9 +66,11 @@ impl Referee for Pcr6 {
 }
 
 pub mod experiment {
-    use silx_types::IntoSlx;
+    // #[cfg(not(feature = "silx-types"))] use crate::fake_slx::FakeSlx;
+    // #[cfg(feature = "silx-types")] use silx_types::IntoSlx;
 
     use crate::{
+        types::IntoSlx,
         structs::{Powerset, DiscountedFuser, Pcr6, Assignment, }, 
         traits::{Lattice, DiscountedFusion, LatticeWithLeaves, }
     };
@@ -82,12 +85,14 @@ pub mod experiment {
             lattice.assignment_with_capacity(2),
             lattice.assignment_with_capacity(2),
         );
-        let (prop_a, m_a) = (lattice.leaf(0)?, 0.3.slx());
-        let (prop_b, m_b) = (lattice.leaf(1)?, 0.4.slx());
-        let (prop_c, m_c) = (lattice.leaf(2)?, 0.5.slx());
-        let (prop_ab, m_ab) = (lattice.join(&prop_a,&prop_b)?,0.5.slx());
-        let (prop_bc, m_bc) = (lattice.join(&prop_b,&prop_c)?,0.7.slx());
-        let (prop_ca, m_ca) = (lattice.join(&prop_c,&prop_a)?,0.6.slx());
+        let (prop_a, m_a) = (lattice.leaf(0)?, 0.3);
+        let (prop_b, m_b) = (lattice.leaf(1)?, 0.4);
+        let (prop_c, m_c) = (lattice.leaf(2)?, 0.5);
+        let (prop_ab, m_ab) = (lattice.join(&prop_a,&prop_b)?,0.5);
+        let (prop_bc, m_bc) = (lattice.join(&prop_b,&prop_c)?,0.7);
+        let (prop_ca, m_ca) = (lattice.join(&prop_c,&prop_a)?,0.6);
+        let (m_a, m_b, m_c, m_ab, m_bc, m_ca) = 
+            (m_a.slx(), m_b.slx(), m_c.slx(), m_ab.slx(), m_bc.slx(), m_ca.slx());
         m1.push(prop_a,m_a)?;
         m1.push(prop_bc,m_bc)?;
         m2.push(prop_b,m_b)?;

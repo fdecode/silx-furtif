@@ -16,17 +16,21 @@
 
 use std::{collections::hash_map, vec};
 
-use crate::{structs::{ Powerset, Taxonomy, }, traits::{CollectionFamily1, IterableLattice, Lattice, LatticeWithLeaves}};
+use crate::{
+    types::{ u128slx, f64slx, },
+    structs::{ Powerset, Taxonomy, }, 
+    traits::{CollectionFamily1, IterableLattice, Lattice, LatticeWithLeaves}
+};
 
 use hashed_type_def::HashedTypeDef;
-use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
-use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
-use silx_types::{f64slx, u128slx};
+#[cfg(feature = "rkyv")] use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+#[cfg(feature = "serde")] use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
+// #[cfg(feature = "silx-types")] use silx_types::{f64slx, u128slx};
+// #[cfg(not(feature = "silx-types"))] use crate::fake_slx::{f64slx, u128slx};
 
-#[derive(
-    Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, SerdeSerialize, SerdeDeserialize, 
-    Clone, Debug
-)]
+#[derive(HashedTypeDef, Clone, Debug)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
+#[cfg_attr(feature = "serde", derive(SerdeSerialize, SerdeDeserialize))]
 /// Enumeration of lattices implemented by default
 pub enum CombiLattice {
     /// Powerset
@@ -141,7 +145,7 @@ impl IterableLattice for CombiLattice {
 impl LatticeWithLeaves for CombiLattice {
     type IntoIterLeaves = hash_map::IntoIter<Self::Item, f64slx>;
 
-    unsafe fn unsafe_weighted_leaf(&self, u: usize) -> Result<(&Self::Item,&silx_types::f64slx),String> {
+    unsafe fn unsafe_weighted_leaf(&self, u: usize) -> Result<(&Self::Item,&f64slx),String> {
         match self {
             CombiLattice::Powerset { powerset } => powerset.unsafe_weighted_leaf(u),
             CombiLattice::Taxonomy { taxonomy } => taxonomy.unsafe_weighted_leaf(u),

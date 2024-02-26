@@ -4,10 +4,14 @@ use std::{
 use core::fmt::Debug;
 
 use hashed_type_def::{ HashedTypeDef, add_hash_fnv1a, };
-use silx_types::{ u128slx, IntoSlx, SlxInto, f64slx, };
+// #[cfg(feature = "silx-types")] use silx_types::{ u128slx, IntoSlx, SlxInto, f64slx, };
+// #[cfg(not(feature = "silx-types"))] use crate::fake_slx::{ f64slx, u128slx, FakeSlx, };
 
-use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
-use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize};
+use crate::types::{ u128slx, f64slx, SlxInto, IntoSlx, };
+
+
+#[cfg(feature = "serde")] use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
+#[cfg(feature = "rkyv")] use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize};
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the Lesser GNU General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
@@ -33,7 +37,8 @@ use crate::{
 
 const DEFAULT_MAX_ITER_LEN : usize = 1024;
 
-#[derive(Archive, RkyvSerialize, RkyvDeserialize, Clone, Debug, HashedTypeDef)]
+#[derive(Clone, Debug, HashedTypeDef)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
 /// Powerset lattice
 pub struct Powerset {
     max_iter_len: u128slx,
@@ -47,10 +52,12 @@ pub struct Powerset {
 }
 
 // implementation of Serde serialization
-mod serding {
-    use silx_types::SlxInto;
+#[cfg(feature = "serde")] mod serding {
+    // #[cfg(feature = "silx-types")] use silx_types::SlxInto;
+    // #[cfg(not(feature = "silx-types"))] use crate::fake_slx::FakeSlx;
+
     use super::{ 
-        Powerset as SerdingPowerset, SerdeSerialize, SerdeDeserialize,
+        Powerset as SerdingPowerset, SerdeSerialize, SerdeDeserialize, SlxInto,
     };
     #[derive(SerdeSerialize,SerdeDeserialize)]
     pub struct Powerset {
@@ -135,7 +142,8 @@ impl Powerset {
         })
     }
 
-    /// Internal use: empty Powerset
+    #[cfg(feature = "serde")] 
+    /// Internal use for serde: empty Powerset
     fn empty() -> Powerset {
         let zero = 0u128.slx();
         let top = SafeElement{ code: zero, lattice_hash: zero };

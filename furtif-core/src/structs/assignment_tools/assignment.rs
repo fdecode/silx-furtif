@@ -17,10 +17,13 @@
 use std::{ collections::{BTreeSet, HashMap}, fmt::{Debug, Display}, hash::Hash, ops::{ Add, Index }, sync::OnceLock };
 
 use hashed_type_def::HashedTypeDef;
-use silx_types::{ u128slx, u32slx, f64slx, SlxInto, IntoSlx, Float, };
+// #[cfg(not(feature = "silx-types"))] use crate::fake_slx::{ u128slx, u32slx, f64slx, FakeSlx, };
+// #[cfg(feature = "silx-types")] use silx_types::{ u128slx, u32slx, f64slx, SlxInto, IntoSlx, Float, };
+use crate::types::{ u128slx, u32slx, f64slx, SlxInto, IntoSlx, };
+#[cfg(feature = "silx-types")] use silx_types::Float;
 
-use serde::{ Serialize as SerdeSerialize, Deserialize as SerdeDeserialize, };
-use rkyv::{ Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+#[cfg(feature = "serde")] use serde::{ Serialize as SerdeSerialize, Deserialize as SerdeDeserialize, };
+#[cfg(feature = "rkyv")] use rkyv::{ Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
 use self::hidden::OrdMap;
 
 use super::SafeElement;
@@ -44,7 +47,8 @@ pub struct AssignmentBuilder<X> where X: Eq + Ord + Hash {
     pub (crate) length_max: u32slx,
 }
 
-#[derive(Clone,HashedTypeDef,Archive,RkyvSerialize,RkyvDeserialize,)]
+#[derive(Clone,HashedTypeDef,)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
 /// Mass assignment: should be build from AssignmentBuilder
 /// * Assignment contains a lattice hash and a sequence of weighted encoded element from this lattice
 /// * Assignments are used in order to encode basic belief function and other belief functions 
@@ -65,12 +69,13 @@ impl <X> From<AssignmentBuilder<X>> for Assignment<X> where X: Eq + Ord + Hash {
 }
 
 // implementation of Serde serialization
+#[cfg(feature = "serde")] 
 mod serding {
     use std::collections::BTreeMap;
-    use super::{ 
-        Assignment as SerdingAssignment, SerdeSerialize, SerdeDeserialize, Hash,
-        IntoSlx, SlxInto,
-    };
+    use super::{ Assignment as SerdingAssignment, SerdeSerialize, SerdeDeserialize, Hash, };
+    // #[cfg(feature = "silx-types")] use super::{ IntoSlx, SlxInto, };
+    // #[cfg(not(feature = "silx-types"))] use crate::fake_slx::FakeSlx;
+    use crate::types::{ SlxInto, IntoSlx, };
     #[derive(SerdeSerialize,SerdeDeserialize)]
     pub struct Assignment<X> where X: Eq + Ord, {
         elements: BTreeMap<X,f64>,
@@ -325,7 +330,8 @@ pub (crate) mod hidden{
 
     use super::*;
 
-    #[derive(PartialEq,HashedTypeDef, Archive, RkyvSerialize,RkyvDeserialize)]
+    #[derive(PartialEq,HashedTypeDef,)]
+    #[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
     #[repr(transparent)]
     /// a structure for internal use
     pub struct OrdData<X>(pub (X, f64slx,));
@@ -356,7 +362,8 @@ pub (crate) mod hidden{
         }
     }
 
-    #[derive(HashedTypeDef,Archive,RkyvSerialize,RkyvDeserialize)]
+    #[derive(HashedTypeDef,)]
+    #[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
     /// a map structure for internal use; element are sorted with weight
     pub struct OrdMap<X> where X: Eq + Ord + Hash, {
         pub (crate) elements: HashMap<X,f64slx>,

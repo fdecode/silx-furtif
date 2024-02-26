@@ -1,15 +1,18 @@
+#[doc(hidden)]
 /// Macro: type hash implementation for primitives
 #[macro_export]
 macro_rules! proc_hashed_type_def_primitive {
     ($($ty: ident,)*) => { $(add_hashed_type_def!( struct $ty { primitive: ()});)* };
 }
 
+#[doc(hidden)]
 /// Macro: type hash implementation for structures, enum, or unions
 #[macro_export]
 macro_rules! multi_hashed_type_def {
     ($($line: stmt;)*) => { $(add_hashed_type_def!($line);)* };
 }
 
+#[doc(hidden)]
 /// Macro: type hash implementation for tuples
 #[macro_export]
 macro_rules! impl_hashed_type_def_tuple {
@@ -26,6 +29,7 @@ macro_rules! impl_hashed_type_def_tuple {
     };
 }
 
+#[doc(hidden)]
 /// Macro: type hash implementation for functions
 #[macro_export]
 macro_rules! impl_hashed_type_def_fn {

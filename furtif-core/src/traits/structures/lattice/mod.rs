@@ -17,9 +17,13 @@
 use std::{ rc::Rc, sync::Arc, hash::Hash, collections::HashMap, };
 use hashed_type_def::HashedTypeDef;
 use rand::prelude::*;
-use silx_types::{ u128slx, IntoSlx, Float, };
+// #[cfg(not(feature = "silx-types"))] use crate::fake_slx::{u128slx, FakeSlx};
+// #[cfg(feature = "silx-types")] use silx_types::{ u128slx, IntoSlx, Float, };
+
+#[cfg(feature = "silx-types")] use silx_types::Float;
 
 use crate::{ 
+    types::{ u128slx, IntoSlx, },
     structs::{
         SafeElement, AssignmentBuilder, Assignment, hidden, 
         ASSIGNMENT_EPSILON, one_f64slx, zero_f64slx, 

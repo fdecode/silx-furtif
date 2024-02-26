@@ -22,13 +22,12 @@ use crate::{
 };
 
 use hashed_type_def::HashedTypeDef;
-use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
-use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
+#[cfg(feature = "rkyv")] use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+#[cfg(feature = "serde")] use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
 
-#[derive(
-    Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, SerdeSerialize, SerdeDeserialize, 
-    Copy, Clone, Debug
-)]
+#[derive(HashedTypeDef, Copy, Clone, Debug)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
+#[cfg_attr(feature = "serde", derive(SerdeSerialize, SerdeDeserialize))]
 /// Disjunctive referee function
 pub struct Disjunctive;
 
@@ -47,19 +46,17 @@ impl Referee for Disjunctive {
             .map(|e| *e).fold(bottom, 
                 |acc,e| unsafe { lattice.unsafe_join(&acc,e) }
             );
-//        let length_mid = u32::MAX.slx(); let length_max = u32::MAX.slx();
-//        let x = join;
         let elements = once((join,*one_f64slx())).collect();
-//        let ord_elements = once(OrdData((x,*one_f64slx()))).collect();
-//        let elements = OrdMap { elements, ord_elements };
         Ok(Assignment { elements, lattice_hash, })
     }
 }
 
 pub mod experiment {
-    use silx_types::IntoSlx;
+    // #[cfg(feature = "silx-types")] use silx_types::IntoSlx;
+    // #[cfg(not(feature = "silx-types"))] use crate::fake_slx::FakeSlx;
 
     use crate::{
+        types::IntoSlx,
         structs::{Powerset, DiscountedFuser, Disjunctive, Assignment, }, 
         traits::{Lattice, DiscountedFusion, LatticeWithLeaves, }
     };
@@ -74,12 +71,14 @@ pub mod experiment {
             lattice.assignment(),
             lattice.assignment(),
         );
-        let (prop_a, m_a) = (lattice.leaf(0)?, 0.3.slx());
-        let (prop_b, m_b) = (lattice.leaf(1)?, 0.4.slx());
-        let (prop_c, m_c) = (lattice.leaf(2)?, 0.5.slx());
-        let (prop_ab, m_ab) = (lattice.join(&prop_a,&prop_b)?,0.5.slx());
-        let (prop_bc, m_bc) = (lattice.join(&prop_b,&prop_c)?,0.7.slx());
-        let (prop_ca, m_ca) = (lattice.join(&prop_c,&prop_a)?,0.6.slx());
+        let (prop_a, m_a) = (lattice.leaf(0)?, 0.3);
+        let (prop_b, m_b) = (lattice.leaf(1)?, 0.4);
+        let (prop_c, m_c) = (lattice.leaf(2)?, 0.5);
+        let (prop_ab, m_ab) = (lattice.join(&prop_a,&prop_b)?,0.5);
+        let (prop_bc, m_bc) = (lattice.join(&prop_b,&prop_c)?,0.7);
+        let (prop_ca, m_ca) = (lattice.join(&prop_c,&prop_a)?,0.6);
+        let (m_a, m_b, m_c, m_ab, m_bc, m_ca) = 
+            (m_a.slx(), m_b.slx(), m_c.slx(), m_ab.slx(), m_bc.slx(), m_ca.slx());
         let prop_abc = lattice.join(&prop_a,&prop_bc)?;
         m1.push(prop_a,m_a)?;
         m1.push(prop_bc,m_bc)?;

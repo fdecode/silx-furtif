@@ -22,13 +22,12 @@ use crate::{
 };
 
 use hashed_type_def::HashedTypeDef;
-use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
-use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
+#[cfg(feature = "rkyv")] use rkyv::{Archive, Serialize as RkyvSerialize, Deserialize as RkyvDeserialize, };
+#[cfg(feature = "serde")] use serde::{Serialize as SerdeSerialize, Deserialize as SerdeDeserialize};
 
-#[derive(
-    Archive, RkyvSerialize, RkyvDeserialize, HashedTypeDef, SerdeSerialize, SerdeDeserialize, 
-    Copy, Clone, Debug
-)]
+#[derive(HashedTypeDef, Copy, Clone, Debug)]
+#[cfg_attr(feature = "rkyv", derive(Archive,RkyvSerialize,RkyvDeserialize))]
+#[cfg_attr(feature = "serde", derive(SerdeSerialize, SerdeDeserialize))]
 /// Dubois & Prade referee function for two assignments
 pub struct DuboisPrade2D;
 
@@ -62,9 +61,11 @@ impl Referee for DuboisPrade2D {
 }
 
 pub mod experiment {
-    use silx_types::IntoSlx;
+    // #[cfg(not(feature = "silx-types"))] use crate::fake_slx::FakeSlx;
+    // #[cfg(feature = "silx-types")] use silx_types::IntoSlx;
 
     use crate::{
+        types::IntoSlx,
         structs::{Powerset, DiscountedFuser, DuboisPrade2D, Assignment, }, 
         traits::{Lattice, DiscountedFusion, LatticeWithLeaves, }
     };
@@ -80,13 +81,15 @@ pub mod experiment {
             lattice.prunable(length_mid, length_max),
             lattice.prunable(length_mid, length_max),
         );
-        let (prop_a, m1_a,) = (lattice.leaf(0)?, 0.3.slx());
-        let (prop_b, m1_b, m2_b) = (lattice.leaf(1)?, 0.2.slx(), 0.1.slx(),);
-        let (prop_c, m2_c) = (lattice.leaf(2)?, 0.5.slx());
-        let (prop_bc, m1_bc) = (lattice.join(&prop_b,&prop_c)?,0.1.slx());
-        let (prop_ca, m1_ca) = (lattice.join(&prop_c,&prop_a)?,0.4.slx());
-        let (prop_ab, m2_ab) = (lattice.join(&prop_a,&prop_b)?,0.3.slx());
-        let (prop_abc, m2_abc) = (lattice.join(&prop_bc,&prop_a)?,0.1.slx());
+        let (prop_a, m1_a,) = (lattice.leaf(0)?, 0.3);
+        let (prop_b, m1_b, m2_b) = (lattice.leaf(1)?, 0.2, 0.1,);
+        let (prop_c, m2_c) = (lattice.leaf(2)?, 0.5);
+        let (prop_bc, m1_bc) = (lattice.join(&prop_b,&prop_c)?,0.1);
+        let (prop_ca, m1_ca) = (lattice.join(&prop_c,&prop_a)?,0.4);
+        let (prop_ab, m2_ab) = (lattice.join(&prop_a,&prop_b)?,0.3);
+        let (prop_abc, m2_abc) = (lattice.join(&prop_bc,&prop_a)?,0.1);
+        let (m1_a, m1_b, m2_b, m2_c, m1_bc, m1_ca, m2_ab, m2_abc) = 
+            (m1_a.slx(), m1_b.slx(), m2_b.slx(), m2_c.slx(), m1_bc.slx(), m1_ca.slx(), m2_ab.slx(), m2_abc.slx());
         m1.push(prop_a,m1_a)?;
         m1.push(prop_b,m1_b)?;
         m1.push(prop_bc,m1_bc)?;

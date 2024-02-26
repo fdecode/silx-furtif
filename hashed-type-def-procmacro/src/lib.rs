@@ -11,12 +11,12 @@
 //! ```toml
 //! [package]
 //! name = "silx_hashed-type-def_examples"
-//! version = "0.1.0"
+//! version = "0.1.1"
 //! edition = "2021"
 //! 
 //! [dependencies]
 //! uuid = "1.7.0"
-//! hashed-type-def = { version = "^0.1.0", features = ["derive"] }
+//! hashed-type-def = { version = "^0.1.1", features = ["derive"] }
 //! ```
 //! ## main.rs
 //! ```text

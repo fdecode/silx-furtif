@@ -18,11 +18,20 @@
 //! 
 //! `furtif-core` contains core components for implementing furtif application  
 //! 
+//! ## Notes:
+//! Documentation is generated under the hypothesis that feature `silx` is enabled, which is default configuration.  
+//!
+//! By default, feature `silx` is enabled, which means:
+//! * Serialization/deserialization (`serde` and `rkyv`) and archive (`rkyv`) features are enabled
+//! * `silx-types` is enabled, so that `f64slx`, `u128slx`, `u32slx` replace the native types `f64`, `u128`, `u32`  
+//! 
+//! Type aliasing and casting are implemented in the `types` module and depend on whether or not the `silx-types` feature is enabled
+//! 
 //! # Purpose
 //! Furtif offers a generic implementation in Rust of functionalities for manipulating belief functions and merging them. 
 //! This crate includes:
 //! * Traits defining the notion of lattice and its variants
-//!   * Two types two lattices are implemented
+//!   * Two types of lattices are implemented
 //!     * Powerset
 //!     * Taxonomy
 //! * Tools for transforming between different forms of belief functions
@@ -31,26 +40,36 @@
 //!   * the design of generic engines for computing fused assignments
 //!     * Presently, an exact computation method with pruning is proposed  
 //! 
-//! Furtif is designed from the outset to operate asynchronously, interacting with the Silx library  
+//! Furtif is designed from the outset to work asynchronously, interacting with the Silx library.
+//! This feature is enabled by default, but can be deselected in Cargo.toml by applying option `default-features = false` on `furtif-core`  
+//! 
+//! Main features of `furtif-core` are:
+//! * `default` : feature `silx` is enabled
+//! * `silx` : makes `furtif-core` compatible with `silx`:
+//!   * Features `silx-types`, `serde` and `rkyv` are enabled
+//! * `serde` : implements serde serialization/deserialization for some types
+//! * `rkyv` : implements rkyv serialization/zero-copy deserialization for some types
+//! * `silx-types` : builds implementations with silx types
+//!   * Silx types `f64slx`, `u128slx`, `u32slx` are used instead of native types `f64`, `u128`, `u32`, in order to implement lattices, elements and assignments  
 //! 
 //! Furtif remains a project under development. 
-//! The current version is closely linked to the Silx crate, since our aim was to integrate Furtif into an asynchronous environment. 
-//! Further enhancements are envisaged, such as a Silx-independent version, or the implementation of Mex modules for Matlab or Octave. 
-//! In addition, we have some developments in view concerning belief functions. 
+//! The current version can work as silx-independent (by applying option `default-features = false` on `furtif-core`) or as silx-integrated crate, the latter allowing it to operate in the asynchronous silx environment.  
+//! Further enhancements are envisaged, such as the implementation of Mex modules for Matlab or Octave. 
+//! In addition, we have some developments in view concerning belief functions.  
 //! 
-//! To start with, the following example gives a minimalist overview of the library's features.
-//! Other examples are also available on the project's github.
+//! To start with, the following silx-independent example gives a minimalist overview of the library's features.
+//! Other examples, especially  silx-integrated, are also available on the project's github.
 //! 
 //! # Minimalist example (Dempster-Shafer fusion)
 //! ## Cargo.toml
 //! ```toml
 //! [package]
 //! name = "silx_furtif_dst"
-//! version = "0.1.0"
+//! version = "0.1.1"
 //! edition = "2021"
 //! 
 //! [dependencies]
-//! furtif-core = "^0.1.0"
+//! furtif-core = { version = "^0.1.1", default-features = false }
 //! ```
 //! ## main.rs
 //! ```
@@ -128,7 +147,16 @@
 //! ```
 
 
+/// Configure the implementation of silx types in accordance with the enabling of the `silx-type` feature
+/// * if `silx-types` is enabled: reimport silx types and cast functions from crate `silx-types`
+/// * if `silx-types` is disabled: replace silx types by native type; cast functions are identity
+pub mod types;
+
 /// Trait definitions
 pub mod traits; 
 /// Struct and Enum definitions
 pub mod structs;
+
+#[doc(hidden)]
+/// Probes for testing features activation
+pub mod probes;
