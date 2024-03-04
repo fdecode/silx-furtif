@@ -1,6 +1,6 @@
 [package]
 name = "hashed-type-def-test"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Frederic Dambreville"]
 license = "Apache-2.0"
@@ -12,6 +12,6 @@ categories = ["development-tools"]
 
 
 [dev-dependencies]
-hashed-type-def = { version = "0.1.1", features = ["impl_rend", "impl_nalgebra_sparse"], path = "../hashed-type-def" }
+hashed-type-def = { version = "0.1.2", features = ["impl_rend", "impl_nalgebra_sparse"], path = "../hashed-type-def" }
 [dependencies]
-hashed-type-def = { version = "0.1.1", features = ["impl_rend", "impl_nalgebra_sparse"], path = "../hashed-type-def" }
+hashed-type-def = { version = "0.1.2", features = ["impl_rend", "impl_nalgebra_sparse"], path = "../hashed-type-def" }

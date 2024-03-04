@@ -16,6 +16,8 @@
 
 /// Lattice implementations
 mod lattice; pub use self::lattice::{ 
-    Powerset, Taxon, TaxonCoder, Taxons, Taxonomy, TaxonomyBuilder, CombiLattice,
+    Powerset, Taxon, TaxonCoder, Taxons, Taxonomy, TaxonomyBuilder, EnumLattice,
     exp_taxonomy_1, exp_taxonomy_2,
-};
+}; 
+#[allow(deprecated)] pub use self::lattice::CombiLattice;
+

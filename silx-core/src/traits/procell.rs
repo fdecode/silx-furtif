@@ -13,7 +13,7 @@ use crate::{
 };
 use std::{ future::Future, sync::Arc, collections::HashMap, pin::Pin, };
 
-use hashed_type_def::HashedTypeUuid;
+use hashed_type_def::HashedTypeDef;
 
 use fnv::FnvHashMap;
 use tokio::{ spawn, sync::Mutex, task::JoinHandle, }; 
@@ -187,7 +187,7 @@ impl ProcessProducer {
             where F: Fn(&'static mut ArchData<U>) -> Pin<Box<dyn Future<Output = ArchData<V> > + Send>> + Clone + Send + Sync + 'static, 
                   U: 'static + SlxData + Send, V: 'static + SlxData, {
         let name = name_channel.clone();
-        let name_u = U::type_uuid(); let name_v = V::type_uuid();
+        let name_u = U::UUID; let name_v = V::UUID;
         let process_type = ProcessType::Reply{ in_type: name_u.clone(), out_type: name_v.clone(),
             mapper: Arc::new(move |bytes: &'static mut SerializedData,| {
                 let addr = bytes as *mut SerializedData;
@@ -216,7 +216,7 @@ impl ProcessProducer {
             where F: Fn(Pin<&'static mut ArchData<U>>) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync + 'static,
                   U: 'static + SlxData {
         let name = name_channel.clone();
-        let name_u = U::type_uuid();
+        let name_u = U::UUID;
         let mapper = Arc::new(move |bytes: &'static mut SerializedData,| f(unsafe { std::mem::transmute(Pin::new(bytes)) }));
         let process_type = ProcessType::Reply{ in_type: name_u.clone(), out_type: name_u.clone(), mapper, };
         if self.processes.insert(name, (name_u.clone(),Some(name_u),process_type)).is_none() { Ok(()) } 
@@ -233,7 +233,7 @@ impl ProcessProducer {
     pub fn add_query<U,V,>(&mut self, name_channel: &String, capacity: Option<usize>,) -> Result<(ArchDispatchSender<U>, ArchDispatchReceiver<V>),String>
             where U: SlxData, V: SlxData,  { 
         let name = name_channel.clone();
-        let name_u = U::type_uuid(); let name_v = V::type_uuid();
+        let name_u = U::UUID; let name_v = V::UUID;
         let (usender, ureceiver) = if let Some(capacity) = capacity { ArchDispatch::bounded::<U>(capacity) } else { ArchDispatch::unbounded::<U>() };
         let (vsender, vreceiver) = if let Some(capacity) = capacity { ArchDispatch::bounded::<V>(capacity) } else { ArchDispatch::unbounded::<V>() };
         let in_chan = ureceiver.inner();
@@ -251,7 +251,7 @@ impl ProcessProducer {
     /// * Output: a dispatch sender for emitting or an error
     pub fn add_emit<U,>(&mut self, name_channel: &String, capacity: Option<usize>,) -> Result<ArchDispatchSender<U>,String> where U: SlxData, { 
         let name = name_channel.clone();
-        let name_u = U::type_uuid();
+        let name_u = U::UUID;
         let (usender, ureceiver) = if let Some(capacity) = capacity { ArchDispatch::bounded::<U>(capacity) } else { ArchDispatch::unbounded::<U>() };
         let in_chan = ureceiver.inner();
         let process_type = ProcessType::Emit{ in_chan, in_type: name_u.clone(), };
@@ -267,7 +267,7 @@ impl ProcessProducer {
     /// * Output: a dispatch receiver for reading or an error
     pub fn add_read<V,>(&mut self, name_channel: &String, capacity: Option<usize>,) -> Result<ArchDispatchReceiver<V>,String> where V: SlxData, {
         let name = name_channel.clone();
-        let name_v = V::type_uuid();
+        let name_v = V::UUID;
         let (vsender, vreceiver) = if let Some(capacity) = capacity { ArchDispatch::bounded::<V>(capacity) } else { ArchDispatch::unbounded::<V>() };
         let out_chan = vsender.inner();
         let process_type = ProcessType::Read{ out_chan, out_type: name_v.clone(), };
@@ -285,7 +285,7 @@ impl ProcessProducer {
     pub fn add_ref_read<V,F,>(&mut self, name_channel: &String, reader: F,) -> Result<(),String>
             where F: Fn(&'static ArchData<V>) -> Pin<Box<dyn Future<Output = ()> + Send>> + Send + Sync + 'static, V: 'static + SlxData, { 
         let name = name_channel.clone();                
-        let name_v = <V as HashedTypeUuid>::type_uuid();
+        let name_v = <V as HashedTypeDef>::UUID;
         let assert = Arc::new(move |bytes: &SerializedData,| reader(unsafe { std::mem::transmute(bytes) }));
         let process_type = ProcessType::RefRead{ out_type: name_v.clone(), assert, };
         if self.processes.insert(name, (name_v,None,process_type)).is_none() { Ok(()) }

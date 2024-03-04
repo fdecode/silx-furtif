@@ -1,6 +1,6 @@
 [package]
 name = "hashed-type-def"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Frederic Dambreville"]
 license = "Apache-2.0"
@@ -11,8 +11,8 @@ readme = "README.md"
 categories = ["development-tools"]
 
 [dependencies]
-hashed-type-def-core = { version = "0.1.1", path = "../hashed-type-def-core" }
-hashed-type-def-procmacro = { version = "0.1.1", optional = true, path = "../hashed-type-def-procmacro" }
+hashed-type-def-core = { version = "0.1.2", path = "../hashed-type-def-core" }
+hashed-type-def-procmacro = { version = "0.1.2", optional = true, path = "../hashed-type-def-procmacro" }
 
 [features]
 default = ["verbose4"]

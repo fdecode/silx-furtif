@@ -1,6 +1,6 @@
 [package]
 name = "furtif-core"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Frederic Dambreville", "Jean Dezert"]
 license = "LGPL-3.0"
@@ -16,8 +16,8 @@ rand_distr = "^0.4.3"
 serde = { version = "^1.0.197", optional = true, features = ["derive",] }
 rkyv = { version = "^0.7.44", optional = true, features = ["uuid", "validation",]}
 
-hashed-type-def = { version = "0.1.1", features = ["derive"], path = "../hashed-type-def" }
-silx-types = { version = "0.1.1", optional = true, path = "../silx-types" }
+hashed-type-def = { version = "0.1.2", features = ["derive"], path = "../hashed-type-def" }
+silx-types = { version = "0.1.2", optional = true, path = "../silx-types" }
 
 [features]
 default = ["silx"]

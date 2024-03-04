@@ -14,7 +14,7 @@
 // Copyright 2024 Frederic Dambreville, Jean Dezert Developers.
 
 
-//! This is part of [**Furtif**](https://github.com/fdecode/silx-furtif) project  
+//! This is part of [**Furtif**](https://crates.io/crates/furtif) project  
 //! 
 //! `furtif-core` contains core components for implementing furtif application  
 //! 
@@ -65,11 +65,11 @@
 //! ```toml
 //! [package]
 //! name = "silx_furtif_dst"
-//! version = "0.1.1"
+//! version = "0.1.2"
 //! edition = "2021"
 //! 
 //! [dependencies]
-//! furtif-core = { version = "^0.1.1", default-features = false }
+//! furtif-core = { version = "0.1.2", default-features = false }
 //! ```
 //! ## main.rs
 //! ```

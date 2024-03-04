@@ -19,7 +19,7 @@ use std::time::Duration;
 use serde::{ Serialize, Deserialize, };
 use tokio::fs::write;
 
-use furtif_core::{ structs::{ Assignment, CombiLattice, }, traits::Lattice, };
+use furtif_core::{ structs::{ Assignment, EnumLattice, }, traits::Lattice, };
 use silx_core::{ id_tools::IdBuilder, utils::{ 
     ServantBuilderParameters, ServantBuilder, SendToMaster, ProcessProducer, ProcessInstance, 
     produce_future, produce_read,
@@ -65,16 +65,16 @@ impl ServantBuilderParameters for DsmtbookWriterBuilder {
         // ////////////////////////////
         // Building servant channels
 
-        // build channel receiver of type `CombiLattice`, of name `self.channel_lattice` and capacity `1`
+        // build channel receiver of type `EnumLattice`, of name `self.channel_lattice` and capacity `1`
         let lattice_recv = match produce_read!(
-            producer,CombiLattice,self.channel_lattice, Some(1)
+            producer,EnumLattice,self.channel_lattice, Some(1)
         ) {
             Ok(rr) => rr,
             Err(_) => { eprintln!("Writer:: failed to produce lattice"); panic!(); },
         };
-        // build channel receiver of type `Vec<Assignment<<CombiLattice as Lattice>::Item>>`, of name `self.channel_writer` and capacity `1`
+        // build channel receiver of type `Vec<Assignment<<EnumLattice as Lattice>::Item>>`, of name `self.channel_writer` and capacity `1`
         let read_recv = match produce_read!(
-            producer,Vec<Assignment<<CombiLattice as Lattice>::Item>>,self.channel_writer, Some(1)
+            producer,Vec<Assignment<<EnumLattice as Lattice>::Item>>,self.channel_writer, Some(1)
         ) {
             Ok(rr) => rr,
             Err(_) => { eprintln!("Writer:: failed to produce read"); panic!(); },

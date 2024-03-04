@@ -18,7 +18,7 @@ use std::time::Duration;
 
 use serde::{ Serialize, Deserialize, };
 
-use furtif_core::{structs::CombiLattice, traits::Lattice};
+use furtif_core::{structs::EnumLattice, traits::Lattice};
 use silx_core::{ id_tools::IdBuilder, utils::{ 
     ServantBuilderParameters, ServantBuilder, SendToMaster, ProcessProducer, ProcessInstance,
     produce_future, produce_emit,
@@ -31,18 +31,18 @@ use silx_types::ArchSized;
 #[derive(Serialize, Deserialize, Clone,)]
 pub struct DsmtbookLatticeBuilder {
     channels_lattice: Vec<String>,
-    lattice: CombiLattice,
+    lattice: EnumLattice,
 }
 
 impl DsmtbookLatticeBuilder {
     #[allow(dead_code)]
     /// Constructor for DsmtbookLatticeBuilder (DSmT book example)
     /// * `channels_lattice: Vec<String>` : channels where to send the lattice definition
-    /// * `lattice: CombiLattice` : instance of the lattice
+    /// * `lattice: EnumLattice` : instance of the lattice
     /// * Output : builder
     pub fn new(
         channels_lattice: Vec<String>, 
-        lattice: CombiLattice,
+        lattice: EnumLattice,
     ) -> Self { Self { channels_lattice, lattice, } }
 }
 
@@ -61,9 +61,9 @@ impl ServantBuilderParameters for DsmtbookLatticeBuilder {
         // ////////////////////////////
         // Building servant channels
 
-        // build channel senders of type `CombiLattice`, of name within `self.channels_lattice` and capacity `1`
+        // build channel senders of type `EnumLattice`, of name within `self.channels_lattice` and capacity `1`
         let in_emit_send = self.channels_lattice.iter().map(|channel| match produce_emit!(
-            producer, CombiLattice, channel, Some(1),
+            producer, EnumLattice, channel, Some(1),
         ) {
             Ok(es) => es,
             Err(_) => { eprintln!("Lattice:: failed to produce emit"); panic!(); },

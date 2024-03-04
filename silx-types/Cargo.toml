@@ -1,6 +1,6 @@
 [package]
 name = "silx-types"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Frederic Dambreville"]
 license = "Apache-2.0"
@@ -22,8 +22,8 @@ rend = "^0.4.2"
 nalgebra = { version = "^0.32.4", optional =  true }
 tokio = { version = "^1.36.0", features = ["full"]}
 
-silx-core = { version = "0.1.1", path = "../silx-core" }
-hashed-type-def = { version = "0.1.1", features = ["derive", "impl_rend"], path = "../hashed-type-def" }
+silx-core = { version = "0.1.2", path = "../silx-core" }
+hashed-type-def = { version = "0.1.2", features = ["derive", "impl_rend"], path = "../hashed-type-def" }
 
 [features]
 default = ["use_nalgebra", "verbose4"]

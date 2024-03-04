@@ -19,7 +19,7 @@ use std::time::Duration;
 use serde::{ Serialize, Deserialize, };
 use tokio::time::sleep;
 
-use furtif_core::{structs::{EnumRule, Assignment, DiscountedFuser, CombiLattice, }, traits::{Lattice, DiscountedFusion}};
+use furtif_core::{structs::{EnumRule, Assignment, DiscountedFuser, EnumLattice, }, traits::{Lattice, DiscountedFusion}};
 use silx_core::{ id_tools::IdBuilder, utils::{ 
     ServantBuilderParameters, ServantBuilder, SendToMaster, ProcessProducer, ProcessInstance, ArchSized,
     produce_emit,
@@ -43,7 +43,7 @@ impl DsmtbookFuserBuilder {
     #[allow(dead_code)]
     /// Constructor for DsmtbookFuserBuilder (DSmT book example)
     /// * `channel_lattice: String` : channel for getting lattice definition
-    /// * `referee: CombiReferee` : referee function characterizing the fusion
+    /// * `referee: EnumRule` : referee function characterizing the fusion
     /// * `channels_reader: Vec<String>` : channels for connecting to the readers
     /// * `channel_writer: String` : channel for connecting to the writer
     /// * `channels_shutdown: Vec<String>` : channels to send shutdown signal
@@ -75,26 +75,26 @@ impl ServantBuilderParameters for DsmtbookFuserBuilder {
         // ////////////////////////////
         // Building servant channels
 
-        // build channel receiver of type `CombiLattice`, of name `self.channel_lattice` and capacity `1`
+        // build channel receiver of type `EnumLattice`, of name `self.channel_lattice` and capacity `1`
         let lattice_recv = match produce_read!(
-            producer,CombiLattice,self.channel_lattice, Some(1)
+            producer,EnumLattice,self.channel_lattice, Some(1)
         ) {
             Ok(rr) => rr,
             Err(_) => { eprintln!("Fuser:: failed to produce lattice"); panic!(); },
         };
-        // build channel receivers of type `Vec<Assignment<<CombiLattice as Lattice>::Item>>`, of name within `self.channels_reader` and capacity `1`
+        // build channel receivers of type `Vec<Assignment<<EnumLattice as Lattice>::Item>>`, of name within `self.channels_reader` and capacity `1`
         let mut readers_recv = Vec::new();
         for rn in self.channels_reader.iter() { 
             readers_recv.push(match produce_read!(
-                producer,Vec<Assignment<<CombiLattice as Lattice>::Item>>,rn, Some(1),
+                producer,Vec<Assignment<<EnumLattice as Lattice>::Item>>,rn, Some(1),
             ) {
                 Ok(rs) => rs,
                 Err(_) => { eprintln!("Fuser:: failed to produce read"); panic!(); },
             }); 
         }
-        // build channel sender of type `Vec<Assignment<<CombiLattice as Lattice>::Item>>`, of name `self.channel_writer` and capacity `1`
+        // build channel sender of type `Vec<Assignment<<EnumLattice as Lattice>::Item>>`, of name `self.channel_writer` and capacity `1`
         let writer_send = match produce_emit!(
-            producer,Vec<Assignment<<CombiLattice as Lattice>::Item>>,self.channel_writer, Some(1)
+            producer,Vec<Assignment<<EnumLattice as Lattice>::Item>>,self.channel_writer, Some(1)
         ) {
             Ok(pe) => pe,
             Err(_) => { eprintln!("Fuser:: failed to produce emit"); panic!(); },

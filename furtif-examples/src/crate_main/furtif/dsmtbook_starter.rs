@@ -16,7 +16,7 @@
 
 use std::{ collections::HashMap, net::SocketAddr, path::Path, time::Duration };
 
-use furtif_core::structs::{EnumRule, CombiLattice};
+use furtif_core::structs::{EnumRule, EnumLattice};
 use silx_core::{ 
     servants::shutdown::ShutdownBuilder, 
     utils::{ StarterProducer, FiledStarter, RecFiled, },
@@ -28,8 +28,8 @@ use super::{ DsmtbookReaderBuilder, DsmtbookFuserBuilder, DsmtbookWriterBuilder,
 
 #[allow(dead_code)]
 /// build starters loaders for the DSmT Book 5 example (with 4 clusters)
-/// * `lattice: CombiLattice` : lattice used by the network
-/// * `referee: CombiReferee` : referee function used by the network
+/// * `lattice: EnumLattice` : lattice used by the network
+/// * `referee: EnumRule` : referee function used by the network
 /// * `main_addr: SocketAddr` : IP adresse of main servant
 /// * `slave_reader1_addr: SocketAddr` : IP adresse of slave servant 1
 /// * `slave_reader2_addr: SocketAddr` : IP adresse of slave servant 2
@@ -48,7 +48,7 @@ use super::{ DsmtbookReaderBuilder, DsmtbookFuserBuilder, DsmtbookWriterBuilder,
 /// * `S: AsRef<Path>` : type of starter file path of slave servant 3
 /// * Output: sequence of starters loaders indexed with their IP addresses 
 pub fn build_dsmtbook_starter<P: AsRef<Path>,Q: AsRef<Path>,R: AsRef<Path>,S: AsRef<Path>> (
-    lattice: CombiLattice,
+    lattice: EnumLattice,
     referee: EnumRule,
     main_addr: SocketAddr,
     slave_reader1_addr: SocketAddr, slave_reader2_addr: SocketAddr, slave_reader3_addr: SocketAddr,
@@ -261,8 +261,8 @@ pub fn build_dsmtbook_starter<P: AsRef<Path>,Q: AsRef<Path>,R: AsRef<Path>,S: As
 // ======= BUILDING STARTER
 
 /// build starter loader for the DSmT Book 5 example (with 1 cluster)
-/// * `lattice: CombiLattice` : lattice used by the network
-/// * `referee: CombiReferee` : referee function used by the network
+/// * `lattice: EnumLattice` : lattice used by the network
+/// * `referee: EnumRule` : referee function used by the network
 /// * `main_addr: SocketAddr` : IP adresse of main servant
 /// * `main_starter_path: P` : path of starter file of main servant 
 /// * `input_1: (SerLang,String)` : serialization langage and input file path of source 1
@@ -273,8 +273,8 @@ pub fn build_dsmtbook_starter<P: AsRef<Path>,Q: AsRef<Path>,R: AsRef<Path>,S: As
 /// * Output: sequence of starters (actually only main) loaders indexed with their IP addresses 
 #[allow(dead_code)]
 pub fn build_dsmtbook_starter_mono<P: AsRef<Path>> (
-    lattice: CombiLattice,
-    referee: EnumRule, // CombiReferee::Pcr6
+    lattice: EnumLattice,
+    referee: EnumRule,
     main_addr: SocketAddr,
     main_starter_path: P, 
     input_1: (SerLang,String), input_2: (SerLang,String), input_3: (SerLang,String),

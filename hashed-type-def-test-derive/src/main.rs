@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use hashed_type_def::{ HashedTypeDef, HashedTypeUuid, add_hashed_type_def_param, };
+use hashed_type_def::{ HashedTypeDef, HashedTypeMethods, add_hashed_type_def_param, };
 
 /// case 1: a named structure to be tested with procedural derivation
 #[derive(Debug,HashedTypeDef)]

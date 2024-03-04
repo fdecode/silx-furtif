@@ -1,9 +1,13 @@
-This is part of [**Furtif**](https://github.com/fdecode/silx-furtif) project  
+This is part of [**Furtif**](https://crates.io/crates/furtif) project  
 
 `furtif-core` contains core components for implementing furtif application  
 
 ## Notes:
-Documentation is generated under the hypothesis that feature `silx` is enabled, which is default configuration.  
+About version 0.1.2: 
+* `CombiLattice` is deprecated and replaced by `EnumLattice`
+* Dependencies are updated  
+
+Documentation is generated under the hypothesis that feature `silx` is enabled, which is default configuration  
 
 By default, feature `silx` is enabled, which means:
 * Serialization/deserialization (`serde` and `rkyv`) and archive (`rkyv`) features are enabled
@@ -49,11 +53,11 @@ Other examples, especially  silx-integrated, are also available on the project's
 ```toml
 [package]
 name = "silx_furtif_dst"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 
 [dependencies]
-furtif-core = { version = "^0.1.1", default-features = false }
+furtif-core = { version = "0.1.2", default-features = false }
 ```
 ## main.rs
 ```rust

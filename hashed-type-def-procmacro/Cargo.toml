@@ -1,6 +1,6 @@
 [package]
 name = "hashed-type-def-procmacro"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Frederic Dambreville"]
 license = "Apache-2.0"
@@ -15,6 +15,6 @@ proc-macro = true
 
 [dependencies]
 proc-macro2 = "^1.0.78"
-syn = "^2.0.51"
+syn = "^2.0.52"
 quote = "^1.0.35"
 rand = "^0.8.5"

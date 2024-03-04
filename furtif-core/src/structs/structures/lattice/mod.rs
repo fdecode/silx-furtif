@@ -22,4 +22,5 @@ mod taxonomy; pub use self::taxonomy::{
     experiment::{ exp_taxonomy_1, exp_taxonomy_2, },
 };
 /// Enumeration of different lattice implementations
-mod enum_lattice; pub use self::enum_lattice::CombiLattice;
+mod enum_lattice; pub use self::enum_lattice::EnumLattice;
+#[allow(deprecated)] pub use self::enum_lattice::CombiLattice;

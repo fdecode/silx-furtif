@@ -15,7 +15,7 @@
 
 
 use std::{net::{SocketAddr, IpAddr, Ipv4Addr}, path::{ PathBuf, Path, }, time::Duration};
-use furtif_core::structs::{CombiLattice, EnumRule, TaxonomyBuilder, Taxonomy, };
+use furtif_core::structs::{EnumLattice, EnumRule, TaxonomyBuilder, Taxonomy, };
 use serde::{Serialize, Deserialize};
 use silx_core::utils::Filable;
 use tokio::{ fs::{DirBuilder, write, }, spawn, time::sleep };
@@ -120,7 +120,7 @@ pub fn taxonomy_bba() -> (Taxonomy,[Vec<Vec<(String,f64)>>;3]) {
 ///    * referee function
 ///    * input files setting
 ///    * output file setting
-pub async fn dsmtbook_setting() -> Result<(PathBuf, CombiLattice, EnumRule, [(SerLang,String);3], (SerLang,String)),String> {
+pub async fn dsmtbook_setting() -> Result<(PathBuf, EnumLattice, EnumRule, [(SerLang,String);3], (SerLang,String)),String> {
     // ======= BUILDING DSmTbook 5 data
 
     // build the taxonomy and the bbas sequence for the DSmTbook 5 example
@@ -192,7 +192,7 @@ pub async fn dsmtbook_setting() -> Result<(PathBuf, CombiLattice, EnumRule, [(Se
         };
     }
     // define lattice
-    let lattice = CombiLattice::Taxonomy{ taxonomy };
+    let lattice = EnumLattice::Taxonomy{ taxonomy };
     // define referee
     let referee = EnumRule::Pcr6;
     Ok((save_path,lattice,referee,[input_1,input_2,input_3],output))

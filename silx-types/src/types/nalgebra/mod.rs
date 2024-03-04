@@ -83,7 +83,7 @@ unsafe impl<T: Clone, const R: usize, const C: usize> IsContiguous for ArrayStor
 
 /// Experimentations on silx matrices archives
 pub fn exp_silx_matrix() {
-    use hashed_type_def::HashedTypeUuid;
+    use hashed_type_def::HashedTypeMethods;
     // matrix to be processed
     let matrix: Matrix<f64slx,_,_,_> = matrix![
         1f64.slx(),     2f64.slx(),     3f64.slx(),     4f64.slx();

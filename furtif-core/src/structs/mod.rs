@@ -26,8 +26,9 @@ mod fusers; pub use self::fusers::{
 };
 /// Definitions of lattices structures
 mod structures; pub use self::structures::{ 
-    Powerset, Taxon, TaxonCoder, Taxonomy, Taxons, TaxonomyBuilder, CombiLattice,
+    Powerset, Taxon, TaxonCoder, Taxonomy, Taxons, TaxonomyBuilder, EnumLattice,
     exp_taxonomy_1, exp_taxonomy_2,
 }; 
+#[allow(deprecated)] pub use self::structures::CombiLattice;
 /// Definitions of metrics
 mod metrics; // not implemented at this time

@@ -1,6 +1,11 @@
-This is part of [**Silx**](https://github.com/fdecode/silx-furtif) project  
+This is part of [**Silx**](https://crates.io/crates/silx) project  
 
 `silx-core` contains core components for implementing silx application  
+
+## Notes:
+About version 0.1.2: 
+* Implementing new HashedTypeDef features  
+* Dependencies are updated  
 
 # Purpose
 Silx aims to enable:
@@ -21,16 +26,16 @@ Other examples are also available on the project's github.
 ```toml
 [package]
 name = "silx_hello"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 
 [dependencies]
 tokio = "^1.36.0"
 serde = "^1.0.197"
-typetag = "^0.2.15"
+typetag = "^0.2.16"
 
-silx-core = "^0.1.1"
-silx-types = "^0.1.1"
+silx-core = "0.1.2"
+silx-types = "0.1.2"
 ```
 ## main.rs
 ```rust
